@@ -26,7 +26,7 @@ const wdOpts = {
   capabilities,
 };
 
-const pauseTime = 3000;
+const pauseTime = 1500;
 
 async function runTest() {
   const driver = await remote(wdOpts);
@@ -77,7 +77,7 @@ async function runTest() {
     await driver.back();
   }
 
-  // this is the display setup
+  // this is the display setup - motion smoothness
   const findDisplay = await driver.$(
     'android=new UiScrollable(new UiSelector().scrollable(true)).scrollIntoView(new UiSelector().text("Display"))'
   );
@@ -123,17 +123,20 @@ async function runTest() {
     await driver.pause(pauseTime);
   }
 
-  await driver
+  // this is the display setup - screen timeout
+
+  const enterScreenTimeoutSettings = await driver
     .$(
       'android=new UiScrollable(new UiSelector().scrollable(true)).scrollIntoView(new UiSelector().text("Screen timeout"))'
     )
     .click();
-
-  await driver
-    .$(
-      'android=new UiScrollable(new UiSelector().scrollable(true)).scrollIntoView(new UiSelector().text("2 minutes"))'
-    )
+  console.log("Enter screen timeout setting: ", enterScreenTimeoutSettings);
+  await driver.pause(pauseTime);
+  const select2Minutes = await driver
+    .$('android=new UiSelector().text("2 minutes")')
     .click();
+
+  console.log("Select 2 minutes: ", select2Minutes);
   await driver.pause(pauseTime);
   await driver.back();
   await driver.back();
