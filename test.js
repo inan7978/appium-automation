@@ -34,7 +34,6 @@ async function runTest() {
   const clickConnections = await driver.$('//*[@text="Connections"]');
   const clickConnectionsResult = await clickConnections.click();
   console.log("click connection result: ", clickConnectionsResult);
-  await driver.pause(pauseTime);
   const checkWifi = await driver.$('//*[@text="HPCCR-Guest"]');
   console.log(
     "-------------------------check wifi--------------------------------\n",
@@ -54,11 +53,12 @@ async function runTest() {
     console.log("select HPCCR Wifi result: ", selectHPCCRWifiResult);
 
     // pause to allow ui to load
-    await driver.pause(pauseTime);
+    // await driver.pause(pauseTime);
 
     const wifiPassField = await driver.$(
       '//*[@resource-id="com.android.settings:id/edittext"]'
     );
+    await wifiPassField.waitForDisplayed({ timeout: 10000 });
     const wifiPassFieldTyped = await wifiPassField.setValue("caringforfamily");
     console.log("wifi password enter result: ", wifiPassFieldTyped);
 
