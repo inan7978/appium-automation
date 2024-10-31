@@ -58,7 +58,8 @@ async function runTest() {
     const wifiPassField = await driver.$(
       '//*[@resource-id="com.android.settings:id/edittext"]'
     );
-    await wifiPassField.waitForDisplayed({ timeout: 10000 });
+    wifiPassField.waitForDisplayed({ timeout: 10000 });
+
     const wifiPassFieldTyped = await wifiPassField.setValue("caringforfamily");
     console.log("wifi password enter result: ", wifiPassFieldTyped);
 
@@ -69,12 +70,27 @@ async function runTest() {
     const connectWifiBtnResult = await connectWifiBtn.click();
     console.log("connect to wifi button result: ", connectWifiBtnResult);
 
-    await driver.pause(pauseTime);
-    await driver.back();
-    await driver.pause(pauseTime);
-    await driver.back();
+    while (
+      !(await driver
+        .$(
+          '//android.widget.TextView[@resource-id="com.android.settings:id/collapsing_appbar_extended_title"]'
+        )
+        .isExisting())
+    ) {
+      driver.back();
+      driver.pause(pauseTime);
+    }
   } else {
-    await driver.back();
+    while (
+      !(await driver
+        .$(
+          '//android.widget.TextView[@resource-id="com.android.settings:id/collapsing_appbar_extended_title"]'
+        )
+        .isExisting())
+    ) {
+      driver.back();
+      driver.pause(pauseTime);
+    }
   }
 
   // this is the display setup - motion smoothness
@@ -138,9 +154,18 @@ async function runTest() {
 
   console.log("Select 2 minutes: ", select2Minutes);
   await driver.pause(pauseTime);
-  await driver.back();
-  await driver.back();
+  while (
+    !(await driver
+      .$(
+        '//android.widget.TextView[@resource-id="com.android.settings:id/collapsing_appbar_extended_title"]'
+      )
+      .isExisting())
+  ) {
+    driver.back();
+    driver.pause(pauseTime);
+  }
 
+  // this where the user info gets added to the lock screen
   await driver
     .$(
       'android=new UiScrollable(new UiSelector().scrollable(true)).scrollIntoView(new UiSelector().text("Wallpaper and style"))'
@@ -158,12 +183,11 @@ async function runTest() {
       '//android.widget.FrameLayout[@content-desc="Contact information"]/android.widget.LinearLayout'
     )
     .click();
-  await driver.pause(pauseTime);
-  await driver
-    .$(
-      '//android.widget.EditText[@resource-id="com.samsung.android.app.dressroom:id/owner_info_edit_text_popup"]'
-    )
-    .setValue(`${nameFUser} ${nameLUser} 7048876441`);
+  const enterName = await driver.$(
+    '//android.widget.EditText[@resource-id="com.samsung.android.app.dressroom:id/owner_info_edit_text_popup"]'
+  );
+  enterName.waitForDisplayed({ timeout: 10000 });
+  enterName.setValue(`${nameFUser} ${nameLUser} 7048876441`);
 
   await driver
     .$('//android.widget.Button[@resource-id="android:id/button1"]')

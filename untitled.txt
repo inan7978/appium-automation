@@ -1,0 +1,2 @@
+
+checkWifi.error && checkWifi.error.error == "no such element"
