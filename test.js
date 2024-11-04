@@ -32,8 +32,8 @@ async function runTest() {
   const driver = await remote(wdOpts);
   // this is the wifi setup
   const clickConnections = await driver.$('//*[@text="Connections"]');
-  const clickConnectionsResult = await clickConnections.click();
-  console.log("click connection result: ", clickConnectionsResult);
+  await clickConnections.click();
+  console.log("click connection result: ", clickConnections);
   const checkWifi = await driver.$('//*[@text="HPCCR-Guest"]');
   console.log(
     "-------------------------check wifi--------------------------------\n",
