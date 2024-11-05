@@ -1,10 +1,10 @@
 const { remote } = require("webdriverio");
 const process = require("process");
 
-const nameFUser = process.argv[2] || null;
-const nameLUser = process.argv[3] || null;
-const emailUser = process.argv[4] || null;
-const passUser = process.argv[5] || null;
+const nameFUser = process.argv[2] || "fname";
+const nameLUser = process.argv[3] || "lname";
+const emailUser = process.argv[4] || "userEmail";
+const passUser = process.argv[5] || "userPass";
 
 const capabilities = {
   platformName: "Android",
@@ -45,12 +45,16 @@ async function runTest() {
   // try {
   //   const clickConnections = await driver.$('//*[@text="Connections"]');
   //   await clickConnections.click();
-  //   const checkWifi = false;
+  //   let checkWifi = false;
   //   try {
-  //     checkWifi = await driver.$('//*[@text="HPCCR-Guest"]').waitForDisplayed({
-  //       timeout: 3000,
-  //       message: "Did not find HPCCR-Guest wifi.",
-  //     });
+  //     checkWifi = await driver
+  //       .$(
+  //         `android=new UiScrollable(new UiSelector().scrollable(true)).scrollIntoView(new UiSelector().resourceId("android:id/summary").className("android.widget.TextView").text("HPCCR-Guest"))
+  // `
+  //       )
+  //       .waitForDisplayed({
+  //         timeout: 2000,
+  //       });
   //   } catch {
   //     console.log("Device is not connected to HPCCR-Guest wifi.");
   //   }
@@ -63,8 +67,12 @@ async function runTest() {
   //   );
 
   //   if (!checkWifi) {
-  //     const findWiFi = await driver.$('//*[@text="Wi-Fi"]');
-  //     await findWiFi.click();
+  //     await driver
+  //       .$(
+  //         `android=new UiScrollable(new UiSelector().scrollable(true)).scrollIntoView(new UiSelector().resourceId("android:id/title").className("android.widget.TextView").text("Wi-Fi"))
+  // `
+  //       )
+  //       .click();
 
   //     const selectHPCCRWifi = await driver.$('//*[@text="HPCCR-Guest"]');
   //     await selectHPCCRWifi.click();
@@ -95,13 +103,13 @@ async function runTest() {
   //   await returnToMain();
   // }
 
-  // motion smoothness setup
-  //   await driver
-  //     .$(
-  //       `android=new UiScrollable(new UiSelector().scrollable(true)).scrollIntoView(new UiSelector().resourceId("android:id/title").className("android.widget.TextView").text("Display"))
-  // `
-  //     )
-  //     .click();
+  // // motion smoothness setup
+  // await driver
+  //   .$(
+  //     `android=new UiScrollable(new UiSelector().scrollable(true)).scrollIntoView(new UiSelector().resourceId("android:id/title").className("android.widget.TextView").text("Display"))
+  //   `
+  //   )
+  //   .click();
 
   // try {
   //   const checkMotionSmoothness = await driver
@@ -125,45 +133,45 @@ async function runTest() {
   //   console.log("Motion smoothness setting not found.");
   // }
 
-  // screen timeout settings
-  //   try {
-  //     await driver
-  //       .$(
-  //         `android=new UiScrollable(new UiSelector().scrollable(true)).scrollIntoView(new UiSelector().resourceId("android:id/title").className("android.widget.TextView").text("Screen timeout"))
-  // `
-  //       )
-  //       .click();
+  // // screen timeout settings
+  // try {
+  //   await driver
+  //     .$(
+  //       `android=new UiScrollable(new UiSelector().scrollable(true)).scrollIntoView(new UiSelector().resourceId("android:id/title").className("android.widget.TextView").text("Screen timeout"))
+  //   `
+  //     )
+  //     .click();
 
-  //     await driver
-  //       .$(
-  //         `android=new UiScrollable(new UiSelector().scrollable(true)).scrollIntoView(new UiSelector().resourceId("com.android.settings:id/timeout_title").className("android.widget.CheckedTextView").text("2 minutes"))
-  // `
-  //       )
-  //       .click();
-  //     await driver.back();
-  //   } catch {
-  //     console.log("Screen timeout setting not found.");
-  //   }
+  //   await driver
+  //     .$(
+  //       `android=new UiScrollable(new UiSelector().scrollable(true)).scrollIntoView(new UiSelector().resourceId("com.android.settings:id/timeout_title").className("android.widget.CheckedTextView").text("2 minutes"))
+  //   `
+  //     )
+  //     .click();
+  //   await driver.back();
+  // } catch {
+  //   console.log("Screen timeout setting not found.");
+  // }
 
-  // edge panels disable
-  //   try {
-  //     await driver
-  //       .$(
-  //         `android=new UiScrollable(new UiSelector().scrollable(true)).scrollIntoView(new UiSelector().resourceId("android:id/switch_widget").className("android.widget.Switch"))
-  // `
-  //       )
-  //       .click();
-  //     await returnToMain();
-  //   } catch {
-  //     console.log("Unable to toggle the edge panels switch");
-  //     await returnToMain();
-  //   }
+  // // edge panels disable
+  // try {
+  //   await driver
+  //     .$(
+  //       `android=new UiScrollable(new UiSelector().scrollable(true)).scrollIntoView(new UiSelector().resourceId("android:id/switch_widget").className("android.widget.Switch"))
+  //   `
+  //     )
+  //     .click();
+  //   await returnToMain();
+  // } catch {
+  //   console.log("Unable to toggle the edge panels switch");
+  //   await returnToMain();
+  // }
 
   // wallpaper text
   await driver
     .$(
       `android=new UiScrollable(new UiSelector().scrollable(true)).scrollIntoView(new UiSelector().resourceId("android:id/title").className("android.widget.TextView").text("Wallpaper and style"))
-`
+  `
     )
     .click();
 
@@ -171,11 +179,52 @@ async function runTest() {
     await driver
       .$(
         `android=new UiScrollable(new UiSelector().scrollable(true)).scrollIntoView(new UiSelector().resourceId("com.samsung.android.app.dressroom:id/lock_screenshot").className("android.widget.ImageView"))
-`
+  `
       )
       .click();
-    // continue the setting here. not all androids have this
-    await returnToMain();
+
+    const infoSetAlready = await driver
+      .$(
+        `android=new UiSelector().className("android.widget.TextView").text("${nameFUser} ${nameLUser} 7048876441")
+  `
+      )
+      .isExisting();
+
+    console.log("Info already set?: ", infoSetAlready);
+    if (!infoSetAlready) {
+      await driver
+        .$(
+          `android=new UiSelector().className("android.widget.TextView").text("Contact information")
+  `
+        )
+        .click();
+
+      const enterName = await driver.$(
+        '//android.widget.EditText[@resource-id="com.samsung.android.app.dressroom:id/owner_info_edit_text_popup"]'
+      );
+      await enterName.waitForDisplayed({ timeout: 3000 });
+      await enterName.setValue(`${nameFUser} ${nameLUser} 7048876441`);
+      await driver.pause(1500);
+
+      await driver
+        .$('//android.widget.Button[@resource-id="android:id/button1"]')
+        .click();
+      // continue the setting here. not all androids have this
+      await driver
+        .$(
+          '//android.widget.Button[@resource-id="com.samsung.android.app.dressroom:id/confirm_button"]'
+        )
+        .click();
+      await returnToMain();
+    } else {
+      console.log("User information was already set on lock screen.");
+      await driver
+        .$(
+          '//android.widget.Button[@resource-id="com.samsung.android.app.dressroom:id/confirm_button"]'
+        )
+        .click();
+      await returnToMain();
+    }
   } catch {
     console.log("An error occured while setting lock screen message");
     await returnToMain();
