@@ -1,2 +1,25 @@
 
 checkWifi.error && checkWifi.error.error == "no such element"
+
+
+
+1. start appium servers for each device with its own port number
+
+appium -p 2345
+appium -p 2346
+
+2. test.js contains code that lets the script run in parallel. There is an array of devices that for now have the serial numbers hard coded.
+
+3. Goal is to write a script that will utilize adb devices command to get the devices that are attached to the computer and from their pair a port number for each device.
+   The port numbers will increment as many times as needed by 1.
+   Once each device has a port number assigned to it, the script will launch an "n" amount of appium servers utilizing the ports, and will then pass the device/port pairs to the test.js file
+   In the js file, there will be a function that will dynamically create "device" objects with proper information (user name, password, name, etc)
+   Once the objects are created, an instance of the script will execute for each device object.
+
+   4. Further improvements can utilize the creating of a status report for each device the briefely says if everything went well or not
+
+   5. Once this multi device functionality is done, any improvements will be done within the test.js file itself
+
+   6. input for each device could be done in the form of a json file
+
+   7. later on, a separate React UI could be made to help others use the tool and to enter the information for each device

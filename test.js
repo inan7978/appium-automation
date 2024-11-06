@@ -1,211 +1,135 @@
 const { remote } = require("webdriverio");
 const process = require("process");
 
-const nameFUser = process.argv[2] || null;
-const nameLUser = process.argv[3] || null;
-const emailUser = process.argv[4] || null;
-const passUser = process.argv[5] || null;
+const nameFUser = process.argv[2] || "fname";
+const nameLUser = process.argv[3] || "lname";
+const emailUser = process.argv[4] || "userEmail";
+const passUser = process.argv[5] || "userPass";
 
-// function mesHelp(message) {
-//   let description = message == null ? "Ok" : message;
-//   return;
-// }
+// Define the device configurations
+const devices = [
+  {
+    udid: "R3CWA0GWK7Z", // Replace with actual UDID
+    port: 4723,
+    systemPort: 8200,
+    deviceName: "Android Device 1",
+    nameFUser: "Bill",
+    nameLUser: "Freeman",
+  },
+  {
+    udid: "R5CR71ETPYK", // Replace with actual UDID
+    port: 4724,
+    systemPort: 8201,
+    deviceName: "Android Device 2",
+    nameFUser: "Mark",
+    nameLUser: "Lanier",
+  },
+  // Add more devices here
+];
 
-const capabilities = {
-  platformName: "Android",
-  "appium:automationName": "UiAutomator2",
-  "appium:deviceName": "Android",
-  "appium:appPackage": "com.android.settings",
-  "appium:appActivity": ".Settings",
-};
+async function runTest(device) {
+  const capabilities = {
+    platformName: "Android",
+    "appium:automationName": "UiAutomator2",
+    "appium:deviceName": device.deviceName,
+    "appium:udid": device.udid,
+    "appium:systemPort": device.systemPort,
+    "appium:appPackage": "com.android.settings",
+    "appium:appActivity": ".Settings",
+  };
 
-const wdOpts = {
-  hostname: process.env.APPIUM_HOST || "localhost",
-  port: parseInt(process.env.APPIUM_PORT, 10) || 4723,
-  logLevel: "info",
-  capabilities,
-};
+  const wdOpts = {
+    hostname: "localhost",
+    port: device.port,
+    logLevel: "info",
+    capabilities,
+  };
 
-const pauseTime = 1500;
-
-async function runTest() {
   const driver = await remote(wdOpts);
-  // this is the wifi setup
-  const clickConnections = await driver.$('//*[@text="Connections"]');
-  await clickConnections.click();
-  console.log("click connection result: ", clickConnections);
-  const checkWifi = await driver.$('//*[@text="HPCCR-Guest"]');
-  console.log(
-    "-------------------------check wifi--------------------------------\n",
-    checkWifi,
-    "\n",
-    "-------------------------------------------------------------------\n"
-  );
-  // checks to see if already connected to wifi
-  if (checkWifi.error && checkWifi.error.error == "no such element") {
-    const clickWiFi = await driver.$('//*[@text="Wi-Fi"]');
-    const clickWiFiResult = await clickWiFi.click();
-    console.log("click wifi result: ", clickWiFiResult);
 
-    const selectHPCCRWifi = await driver.$('//*[@text="HPCCR-Guest"]');
-    await driver.pause(pauseTime);
-    const selectHPCCRWifiResult = await selectHPCCRWifi.click();
-    console.log("select HPCCR Wifi result: ", selectHPCCRWifiResult);
-
-    // pause to allow ui to load
-    // await driver.pause(pauseTime);
-
-    const wifiPassField = await driver.$(
-      '//*[@resource-id="com.android.settings:id/edittext"]'
-    );
-    wifiPassField.waitForDisplayed({ timeout: 10000 });
-
-    const wifiPassFieldTyped = await wifiPassField.setValue("caringforfamily");
-    console.log("wifi password enter result: ", wifiPassFieldTyped);
-
-    // Locate the "Connect" button (use the appropriate XPath/ID here)
-    const connectWifiBtn = await driver.$(
-      '//*[@resource-id="com.android.settings:id/shared_password_container"]'
-    );
-    const connectWifiBtnResult = await connectWifiBtn.click();
-    console.log("connect to wifi button result: ", connectWifiBtnResult);
-
-    while (
-      !(await driver
+  // Your existing function logic goes here
+  async function returnToMain() {
+    while (true) {
+      await driver.back();
+      const temp = await driver
         .$(
-          '//android.widget.TextView[@resource-id="com.android.settings:id/collapsing_appbar_extended_title"]'
+          `android=new UiScrollable(new UiSelector().scrollable(true)).scrollIntoView(new UiSelector().resourceId("android:id/title").className("android.widget.TextView").text("Samsung account"))`
         )
-        .isExisting())
-    ) {
-      driver.back();
-      driver.pause(pauseTime);
-    }
-  } else {
-    while (
-      !(await driver
-        .$(
-          '//android.widget.TextView[@resource-id="com.android.settings:id/collapsing_appbar_extended_title"]'
-        )
-        .isExisting())
-    ) {
-      driver.back();
-      driver.pause(pauseTime);
+        .isExisting();
+
+      if (temp) {
+        console.log("Back to main settings page.");
+        return "At main";
+      }
     }
   }
 
-  // this is the display setup - motion smoothness
-  const findDisplay = await driver.$(
-    'android=new UiScrollable(new UiSelector().scrollable(true)).scrollIntoView(new UiSelector().text("Display"))'
-  );
-  const clickDisplayResult = await findDisplay.click();
-  console.log("enter into display settings result: ", clickDisplayResult);
+  try {
+    const clickConnections = await driver.$('//*[@text="Connections"]');
+    await clickConnections.click();
+    let checkWifi = false;
+    try {
+      checkWifi = await driver
+        .$(
+          `android=new UiScrollable(new UiSelector().scrollable(true)).scrollIntoView(new UiSelector().resourceId("android:id/summary").className("android.widget.TextView").text("HPCCR-Guest"))
+  `
+        )
+        .waitForDisplayed({
+          timeout: 2000,
+        });
+    } catch {
+      console.log("Device is not connected to HPCCR-Guest wifi.");
+    }
 
-  const checkMotion = await driver.$(
-    '//android.widget.TextView[@resource-id="android:id/summary" and @text="Standard"]'
-  );
-
-  console.log(
-    "-------------------------check motion -----------------------------\n",
-    checkMotion,
-    "\n",
-    "-------------------------------------------------------------------\n"
-  );
-
-  if (checkMotion.error && checkMotion.error.error == "no such element") {
-    const selectMotionSmoothness = await driver.$(
-      'android=new UiScrollable(new UiSelector().scrollable(true)).scrollIntoView(new UiSelector().text("Motion smoothness"))'
-    );
-    const enterMotionSmoothness = await selectMotionSmoothness.click();
     console.log(
-      "result of entering motion smoothness settings: ",
-      enterMotionSmoothness
+      "-------------------------check wifi--------------------------------\n",
+      await checkWifi,
+      "\n",
+      "-------------------------------------------------------------------\n"
     );
 
-    const findStandard = await driver.$(
-      '//android.widget.TextView[@resource-id="android:id/title" and @text="Standard"]'
-    );
-    const clickStandard = findStandard.click();
-    console.log("result of selecting standard: ", clickStandard);
+    if (!checkWifi) {
+      await driver
+        .$(
+          `android=new UiScrollable(new UiSelector().scrollable(true)).scrollIntoView(new UiSelector().resourceId("android:id/title").className("android.widget.TextView").text("Wi-Fi"))
+  `
+        )
+        .click();
 
-    const selectConfirmStandardButton = await driver.$(
-      '//android.widget.Button[@resource-id="com.android.settings:id/button"]'
-    );
-    const clickConfirmStandardButton =
-      await selectConfirmStandardButton.click();
-    console.log(
-      "result of clicking the confirm button when setting motion smoothness: ",
-      clickConfirmStandardButton
-    );
-    await driver.pause(pauseTime);
+      const selectHPCCRWifi = await driver.$('//*[@text="HPCCR-Guest"]');
+      await selectHPCCRWifi.click();
+
+      const wifiPassField = await driver.$(
+        '//*[@resource-id="com.android.settings:id/edittext"]'
+      );
+      wifiPassField.waitForDisplayed({ timeout: 10000 });
+
+      const wifiPassFieldTyped = await wifiPassField.setValue(
+        "caringforfamily"
+      );
+      console.log("wifi password enter result: ", wifiPassFieldTyped);
+
+      // Locate the "Connect" button (use the appropriate XPath/ID here)
+      const connectWifiBtn = await driver.$(
+        '//*[@resource-id="com.android.settings:id/shared_password_container"]'
+      );
+      const connectWifiBtnResult = await connectWifiBtn.click();
+      console.log("connect to wifi button result: ", connectWifiBtnResult);
+
+      await returnToMain();
+    } else {
+      await returnToMain();
+    }
+  } catch {
+    console.log("Error setting wifi");
+    await returnToMain();
   }
+  // Rest of your test logic for Wi-Fi, motion smoothness, screen timeout, etc.
 
-  // this is the display setup - screen timeout
-
-  const enterScreenTimeoutSettings = await driver
-    .$(
-      'android=new UiScrollable(new UiSelector().scrollable(true)).scrollIntoView(new UiSelector().text("Screen timeout"))'
-    )
-    .click();
-  console.log("Enter screen timeout setting: ", enterScreenTimeoutSettings);
-  await driver.pause(pauseTime);
-  const select2Minutes = await driver
-    .$('android=new UiSelector().text("2 minutes")')
-    .click();
-
-  console.log("Select 2 minutes: ", select2Minutes);
-  await driver.pause(pauseTime);
-  while (
-    !(await driver
-      .$(
-        '//android.widget.TextView[@resource-id="com.android.settings:id/collapsing_appbar_extended_title"]'
-      )
-      .isExisting())
-  ) {
-    driver.back();
-    driver.pause(pauseTime);
-  }
-
-  // this where the user info gets added to the lock screen
-  await driver
-    .$(
-      'android=new UiScrollable(new UiSelector().scrollable(true)).scrollIntoView(new UiSelector().text("Wallpaper and style"))'
-    )
-    .click();
-
-  await driver
-    .$(
-      '//android.widget.FrameLayout[@content-desc="Lock screen"]/android.widget.FrameLayout/android.widget.FrameLayout'
-    )
-    .click();
-
-  await driver
-    .$(
-      '//android.widget.FrameLayout[@content-desc="Contact information"]/android.widget.LinearLayout'
-    )
-    .click();
-  const enterName = await driver.$(
-    '//android.widget.EditText[@resource-id="com.samsung.android.app.dressroom:id/owner_info_edit_text_popup"]'
-  );
-  enterName.waitForDisplayed({ timeout: 10000 });
-  enterName.setValue(`${nameFUser} ${nameLUser} 7048876441`);
-
-  await driver
-    .$('//android.widget.Button[@resource-id="android:id/button1"]')
-    .click();
-
-  await driver.pause(pauseTime);
-
-  await driver
-    .$(
-      'new UiSelector().resourceId("com.samsung.android.app.dressroom:id/confirm_button")'
-    )
-    .click();
-
-  await driver.pause(pauseTime);
-
-  driver.back();
+  await driver.deleteSession();
 }
 
-//*[@resource-id="com.android.settings:id/owner_info_edit_text_popup"]
-
-runTest().catch(console.error);
+// Run tests in parallel
+(async () => {
+  await Promise.all(devices.map((device) => runTest(device)));
+})();

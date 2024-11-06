@@ -41,131 +41,131 @@ async function runTest() {
     }
   }
 
-  // // wifi setup
-  // try {
-  //   const clickConnections = await driver.$('//*[@text="Connections"]');
-  //   await clickConnections.click();
-  //   let checkWifi = false;
-  //   try {
-  //     checkWifi = await driver
-  //       .$(
-  //         `android=new UiScrollable(new UiSelector().scrollable(true)).scrollIntoView(new UiSelector().resourceId("android:id/summary").className("android.widget.TextView").text("HPCCR-Guest"))
-  // `
-  //       )
-  //       .waitForDisplayed({
-  //         timeout: 2000,
-  //       });
-  //   } catch {
-  //     console.log("Device is not connected to HPCCR-Guest wifi.");
-  //   }
+  // wifi setup
+  try {
+    const clickConnections = await driver.$('//*[@text="Connections"]');
+    await clickConnections.click();
+    let checkWifi = false;
+    try {
+      checkWifi = await driver
+        .$(
+          `android=new UiScrollable(new UiSelector().scrollable(true)).scrollIntoView(new UiSelector().resourceId("android:id/summary").className("android.widget.TextView").text("HPCCR-Guest"))
+  `
+        )
+        .waitForDisplayed({
+          timeout: 2000,
+        });
+    } catch {
+      console.log("Device is not connected to HPCCR-Guest wifi.");
+    }
 
-  //   console.log(
-  //     "-------------------------check wifi--------------------------------\n",
-  //     await checkWifi,
-  //     "\n",
-  //     "-------------------------------------------------------------------\n"
-  //   );
+    console.log(
+      "-------------------------check wifi--------------------------------\n",
+      await checkWifi,
+      "\n",
+      "-------------------------------------------------------------------\n"
+    );
 
-  //   if (!checkWifi) {
-  //     await driver
-  //       .$(
-  //         `android=new UiScrollable(new UiSelector().scrollable(true)).scrollIntoView(new UiSelector().resourceId("android:id/title").className("android.widget.TextView").text("Wi-Fi"))
-  // `
-  //       )
-  //       .click();
+    if (!checkWifi) {
+      await driver
+        .$(
+          `android=new UiScrollable(new UiSelector().scrollable(true)).scrollIntoView(new UiSelector().resourceId("android:id/title").className("android.widget.TextView").text("Wi-Fi"))
+  `
+        )
+        .click();
 
-  //     const selectHPCCRWifi = await driver.$('//*[@text="HPCCR-Guest"]');
-  //     await selectHPCCRWifi.click();
+      const selectHPCCRWifi = await driver.$('//*[@text="HPCCR-Guest"]');
+      await selectHPCCRWifi.click();
 
-  //     const wifiPassField = await driver.$(
-  //       '//*[@resource-id="com.android.settings:id/edittext"]'
-  //     );
-  //     wifiPassField.waitForDisplayed({ timeout: 10000 });
+      const wifiPassField = await driver.$(
+        '//*[@resource-id="com.android.settings:id/edittext"]'
+      );
+      wifiPassField.waitForDisplayed({ timeout: 10000 });
 
-  //     const wifiPassFieldTyped = await wifiPassField.setValue(
-  //       "caringforfamily"
-  //     );
-  //     console.log("wifi password enter result: ", wifiPassFieldTyped);
+      const wifiPassFieldTyped = await wifiPassField.setValue(
+        "caringforfamily"
+      );
+      console.log("wifi password enter result: ", wifiPassFieldTyped);
 
-  //     // Locate the "Connect" button (use the appropriate XPath/ID here)
-  //     const connectWifiBtn = await driver.$(
-  //       '//*[@resource-id="com.android.settings:id/shared_password_container"]'
-  //     );
-  //     const connectWifiBtnResult = await connectWifiBtn.click();
-  //     console.log("connect to wifi button result: ", connectWifiBtnResult);
+      // Locate the "Connect" button (use the appropriate XPath/ID here)
+      const connectWifiBtn = await driver.$(
+        '//*[@resource-id="com.android.settings:id/shared_password_container"]'
+      );
+      const connectWifiBtnResult = await connectWifiBtn.click();
+      console.log("connect to wifi button result: ", connectWifiBtnResult);
 
-  //     await returnToMain();
-  //   } else {
-  //     await returnToMain();
-  //   }
-  // } catch {
-  //   console.log("Error setting wifi");
-  //   await returnToMain();
-  // }
+      await returnToMain();
+    } else {
+      await returnToMain();
+    }
+  } catch {
+    console.log("Error setting wifi");
+    await returnToMain();
+  }
 
-  // // motion smoothness setup
-  // await driver
-  //   .$(
-  //     `android=new UiScrollable(new UiSelector().scrollable(true)).scrollIntoView(new UiSelector().resourceId("android:id/title").className("android.widget.TextView").text("Display"))
-  //   `
-  //   )
-  //   .click();
+  // motion smoothness setup
+  await driver
+    .$(
+      `android=new UiScrollable(new UiSelector().scrollable(true)).scrollIntoView(new UiSelector().resourceId("android:id/title").className("android.widget.TextView").text("Display"))
+    `
+    )
+    .click();
 
-  // try {
-  //   const checkMotionSmoothness = await driver
-  //     .$(
-  //       `android=new UiScrollable(new UiSelector().scrollable(true)).scrollIntoView(new UiSelector().resourceId("android:id/summary").className("android.widget.TextView").text("Standard"))`
-  //     )
-  //     .waitForDisplayed({
-  //       timeout: 2000,
-  //       message: "Standard smoothness does not appear to be set.",
-  //     });
+  try {
+    const checkMotionSmoothness = await driver
+      .$(
+        `android=new UiScrollable(new UiSelector().scrollable(true)).scrollIntoView(new UiSelector().resourceId("android:id/summary").className("android.widget.TextView").text("Standard"))`
+      )
+      .waitForDisplayed({
+        timeout: 2000,
+        message: "Standard smoothness does not appear to be set.",
+      });
 
-  //   console.log("motion smoothness standard?: " + checkMotionSmoothness);
-  //   if (!checkMotionSmoothness) {
-  //     console.log("Motion is not set to standard");
-  //     // add script items to change the motion smoothness here
-  //   } else {
-  //     // back out of it here
-  //     console.log("Motion is set to standard");
-  //   }
-  // } catch {
-  //   console.log("Motion smoothness setting not found.");
-  // }
+    console.log("motion smoothness standard?: " + checkMotionSmoothness);
+    if (!checkMotionSmoothness) {
+      console.log("Motion is not set to standard");
+      // add script items to change the motion smoothness here
+    } else {
+      // back out of it here
+      console.log("Motion is set to standard");
+    }
+  } catch {
+    console.log("Motion smoothness setting not found.");
+  }
 
-  // // screen timeout settings
-  // try {
-  //   await driver
-  //     .$(
-  //       `android=new UiScrollable(new UiSelector().scrollable(true)).scrollIntoView(new UiSelector().resourceId("android:id/title").className("android.widget.TextView").text("Screen timeout"))
-  //   `
-  //     )
-  //     .click();
+  // screen timeout settings
+  try {
+    await driver
+      .$(
+        `android=new UiScrollable(new UiSelector().scrollable(true)).scrollIntoView(new UiSelector().resourceId("android:id/title").className("android.widget.TextView").text("Screen timeout"))
+    `
+      )
+      .click();
 
-  //   await driver
-  //     .$(
-  //       `android=new UiScrollable(new UiSelector().scrollable(true)).scrollIntoView(new UiSelector().resourceId("com.android.settings:id/timeout_title").className("android.widget.CheckedTextView").text("2 minutes"))
-  //   `
-  //     )
-  //     .click();
-  //   await driver.back();
-  // } catch {
-  //   console.log("Screen timeout setting not found.");
-  // }
+    await driver
+      .$(
+        `android=new UiScrollable(new UiSelector().scrollable(true)).scrollIntoView(new UiSelector().resourceId("com.android.settings:id/timeout_title").className("android.widget.CheckedTextView").text("2 minutes"))
+    `
+      )
+      .click();
+    await driver.back();
+  } catch {
+    console.log("Screen timeout setting not found.");
+  }
 
-  // // edge panels disable
-  // try {
-  //   await driver
-  //     .$(
-  //       `android=new UiScrollable(new UiSelector().scrollable(true)).scrollIntoView(new UiSelector().resourceId("android:id/switch_widget").className("android.widget.Switch"))
-  //   `
-  //     )
-  //     .click();
-  //   await returnToMain();
-  // } catch {
-  //   console.log("Unable to toggle the edge panels switch");
-  //   await returnToMain();
-  // }
+  // edge panels disable
+  try {
+    await driver
+      .$(
+        `android=new UiScrollable(new UiSelector().scrollable(true)).scrollIntoView(new UiSelector().resourceId("android:id/switch_widget").className("android.widget.Switch"))
+    `
+      )
+      .click();
+    await returnToMain();
+  } catch {
+    console.log("Unable to toggle the edge panels switch");
+    await returnToMain();
+  }
 
   // wallpaper text
   await driver
