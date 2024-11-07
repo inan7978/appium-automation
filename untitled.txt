@@ -23,3 +23,18 @@ appium -p 2346
    6. input for each device could be done in the form of a json file
 
    7. later on, a separate React UI could be made to help others use the tool and to enter the information for each device
+
+
+   1. Get adb devices
+   2. append port numbers to each device
+   3. pass this new data into a new process that opens up n-amount of appium instances for each device
+   4. pass same new data into a test.js script that creates an array of devices from the input
+
+
+   use to close sessions by port number
+
+   netstat -ano | findstr :4073
+   // will return a process ID
+   // enter it below (would be in the slot of 28652)
+
+   taskkill /PID 28652 /F
