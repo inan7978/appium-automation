@@ -38,3 +38,42 @@ appium -p 2346
    // enter it below (would be in the slot of 28652)
 
    taskkill /PID 28652 /F
+
+
+   AutomationTool
+      tablets
+         procedures
+            setWifi
+            setDisplay
+            ...
+         outputs
+            05232025-0945
+            06212025-1715
+            ...
+         scripts
+            mainAutoSetupTablet
+            ...
+
+      cellPhones
+         procedures
+            setMotion
+            setLockScreen
+            ...
+         outputs
+            05232025-0945
+            06212025-1715
+            ...
+         scripts
+            mainAutoSetupCellPhone
+            ...
+      
+      Tools
+         getDevicesAttached
+         createDeviceObjectsList
+         launchAppiumServers
+         ...
+
+      Resources
+         toolDescription.txt
+         directoryPlanning.md
+         ... 
