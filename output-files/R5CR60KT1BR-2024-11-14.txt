@@ -1,0 +1,10 @@
+{
+  "device": "R5CR60KT1BR",
+  "results": {
+    "wifiSet": true,
+    "motionIsStandard": true,
+    "screenTimeoutSet": true,
+    "edgePanelsOff": true,
+    "LockScreenMessageSet": true
+  }
+}

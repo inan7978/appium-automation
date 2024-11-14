@@ -113,6 +113,9 @@ async function runTest() {
 
   try {
     const checkMotionSmoothness = await driver
+      .$('android=new UiSelector().text("Motion smoothness")')
+      .isExisting();
+    const checkMotionSmoothnessValue = await driver
       .$(
         `android=new UiScrollable(new UiSelector().scrollable(true)).scrollIntoView(new UiSelector().resourceId("android:id/summary").className("android.widget.TextView").text("Standard"))`
       )
@@ -121,10 +124,33 @@ async function runTest() {
         message: "Standard smoothness does not appear to be set.",
       });
 
-    console.log("motion smoothness standard?: " + checkMotionSmoothness);
-    if (!checkMotionSmoothness) {
+    console.log(
+      "motion smoothness standard?: " + checkMotionSmoothness &&
+        checkMotionSmoothnessValue
+    );
+    if (!checkMotionSmoothnessValue && checkMotionSmoothness) {
       console.log("Motion is not set to standard");
       // add script items to change the motion smoothness here
+      await driver
+        .$(
+          `android=new UiScrollable(new UiSelector().scrollable(true)).scrollIntoView(new UiSelector().resourceId("android:id/title").className("android.widget.TextView").text("Motion smoothness"))
+      `
+        )
+        .click();
+      await driver
+        .$(
+          `android=new UiScrollable(new UiSelector().scrollable(true)).scrollIntoView(new UiSelector().resourceId("android:id/title").className("android.widget.TextView").text("Standard"))
+      `
+        )
+        .click();
+
+      await driver
+        .$(
+          `android=new UiSelector().resourceId("com.android.settings:id/button").className("android.widget.Button").text("Apply")`
+        )
+        .click();
+
+      await returnToMain();
     } else {
       // back out of it here
       console.log("Motion is set to standard");

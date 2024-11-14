@@ -1,4 +1,4 @@
-const { exec } = require("child_process");
+const { exec, spawn } = require("child_process");
 const fs = require("fs");
 const { remote } = require("webdriverio");
 const process = require("process");
@@ -76,7 +76,7 @@ async function main() {
       capabilities,
     };
 
-    let results = [{ device: device.udid }];
+    let results = { device: device.udid, results: {} };
 
     const driver = await remote(wdOpts);
 
@@ -148,171 +148,210 @@ async function main() {
         );
         const connectWifiBtnResult = await connectWifiBtn.click();
         console.log("connect to wifi button result: ", connectWifiBtnResult);
-        results.push({ "Setting WiFi (HPCCR)": "Success" });
+        results.results.wifiSet = true;
         await returnToMain();
       } else {
-        results.push({ "Setting WiFi (HPCCR)": "True" });
+        results.results.wifiSet = true;
         await returnToMain();
       }
     } catch (err) {
       console.log("Error setting wifi");
-      results.push({ "Setting WiFi (HPCCR)": err });
+      results.results.wifiSet = err;
       await returnToMain();
     }
     // Rest of your test logic for Wi-Fi, motion smoothness, screen timeout, etc.
     // motion smoothness setup
-    // await driver
-    //   .$(
-    //     `android=new UiScrollable(new UiSelector().scrollable(true)).scrollIntoView(new UiSelector().resourceId("android:id/title").className("android.widget.TextView").text("Display"))
-    // `
-    //   )
-    //   .click();
+    await driver
+      .$(
+        `android=new UiScrollable(new UiSelector().scrollable(true)).scrollIntoView(new UiSelector().resourceId("android:id/title").className("android.widget.TextView").text("Display"))
+    `
+      )
+      .click();
 
-    // try {
-    //   const checkMotionSmoothness = await driver
-    //     .$(
-    //       `android=new UiScrollable(new UiSelector().scrollable(true)).scrollIntoView(new UiSelector().resourceId("android:id/summary").className("android.widget.TextView").text("Standard"))`
-    //     )
-    //     .waitForDisplayed({
-    //       timeout: 2000,
-    //       message: "Standard smoothness does not appear to be set.",
-    //     });
+    try {
+      await driver
+        .$('android=new UiSelector().text("Motion smoothness")')
+        .click();
 
-    //   console.log("motion smoothness standard?: " + checkMotionSmoothness);
-    //   if (!checkMotionSmoothness) {
-    //     console.log("Motion is not set to standard");
-    //     // add script items to change the motion smoothness here
-    //   } else {
-    //     // back out of it here
-    //     console.log("Motion is set to standard");
-    //   }
-    // } catch {
-    //   console.log("Motion smoothness setting not found.");
-    // }
+      const standardSet = await driver
+        .$(
+          `android=new UiSelector().resourceId("android:id/checkbox").instance(1)`
+        )
+        .getAttribute("checked");
 
-    // // screen timeout settings
-    // try {
-    //   await driver
-    //     .$(
-    //       `android=new UiScrollable(new UiSelector().scrollable(true)).scrollIntoView(new UiSelector().resourceId("android:id/title").className("android.widget.TextView").text("Screen timeout"))
-    // `
-    //     )
-    //     .click();
+      console.log("Testing here: ", standardSet);
 
-    //   await driver
-    //     .$(
-    //       `android=new UiScrollable(new UiSelector().scrollable(true)).scrollIntoView(new UiSelector().resourceId("com.android.settings:id/timeout_title").className("android.widget.CheckedTextView").text("2 minutes"))
-    // `
-    //     )
-    //     .click();
-    //   await driver.back();
-    // } catch {
-    //   console.log("Screen timeout setting not found.");
-    // }
+      if (!standardSet) {
+        console.log("Motion is not set to standard");
+        // add script items to change the motion smoothness here
+        await driver
+          .$(
+            `android=new UiScrollable(new UiSelector().scrollable(true)).scrollIntoView(new UiSelector().resourceId("android:id/title").className("android.widget.TextView").text("Standard"))
+      `
+          )
+          .click();
+
+        await driver
+          .$(
+            `android=new UiSelector().resourceId("com.android.settings:id/button").className("android.widget.Button").text("Apply")`
+          )
+          .click();
+        results.results.motionIsStandard = true;
+      } else {
+        // back out of it here
+        await driver.back();
+        results.results.motionIsStandard = true;
+        console.log("Motion is set to standard");
+      }
+    } catch (error) {
+      results.results.motionIsStandard = error;
+    }
+
+    // screen timeout settings
+    try {
+      await driver
+        .$(
+          `android=new UiScrollable(new UiSelector().scrollable(true)).scrollIntoView(new UiSelector().resourceId("android:id/title").className("android.widget.TextView").text("Screen timeout"))
+    `
+        )
+        .click();
+
+      await driver
+        .$(
+          `android=new UiScrollable(new UiSelector().scrollable(true)).scrollIntoView(new UiSelector().resourceId("com.android.settings:id/timeout_title").className("android.widget.CheckedTextView").text("2 minutes"))
+    `
+        )
+        .click();
+      results.results.screenTimeoutSet = true;
+      await driver.back();
+    } catch {
+      console.log("Screen timeout setting not found.");
+      results.results.screenTimeoutSet = false;
+    }
 
     // edge panels disable
-    //     try {
-    //       await driver
-    //         .$(
-    //           `android=new UiScrollable(new UiSelector().scrollable(true)).scrollIntoView(new UiSelector().resourceId("android:id/switch_widget").className("android.widget.Switch"))
-    //     `
-    //         )
-    //         .click();
-    //       await returnToMain();
-    //     } catch {
-    //       console.log("Unable to toggle the edge panels switch");
-    //       await returnToMain();
-    //     }
+    try {
+      await driver
+        .$(
+          `android=new UiScrollable(new UiSelector().scrollable(true)).scrollIntoView(new UiSelector().resourceId("android:id/switch_widget").className("android.widget.Switch"))
+        `
+        )
+        .click();
+      results.results.edgePanelsOff = true;
 
-    //     // wallpaper text
-    //     await driver
-    //       .$(
-    //         `android=new UiScrollable(new UiSelector().scrollable(true)).scrollIntoView(new UiSelector().resourceId("android:id/title").className("android.widget.TextView").text("Wallpaper and style"))
-    // `
-    //       )
-    //       .click();
+      await returnToMain();
+    } catch {
+      console.log("Unable to toggle the edge panels switch");
+      results.results.edgePanelsOff = false;
 
-    //     try {
-    //       await driver
-    //         .$(
-    //           `android=new UiScrollable(new UiSelector().scrollable(true)).scrollIntoView(new UiSelector().resourceId("com.samsung.android.app.dressroom:id/lock_screenshot").className("android.widget.ImageView"))
-    // `
-    //         )
-    //         .click();
+      await returnToMain();
+    }
 
-    //       const infoSetAlready = await driver
-    //         .$(
-    //           `android=new UiSelector().className("android.widget.TextView").text("testing 7048876441")
-    // `
-    //         )
-    //         .isExisting();
+    // wallpaper text
+    await driver
+      .$(
+        `android=new UiScrollable(new UiSelector().scrollable(true)).scrollIntoView(new UiSelector().resourceId("android:id/title").className("android.widget.TextView").text("Wallpaper and style"))
+    `
+      )
+      .click();
 
-    //       console.log("Info already set?: ", infoSetAlready);
-    //       if (!infoSetAlready) {
-    //         await driver
-    //           .$(
-    //             `android=new UiSelector().className("android.widget.TextView").text("Contact information")
-    // `
-    //           )
-    //           .click();
+    try {
+      await driver
+        .$(
+          `android=new UiScrollable(new UiSelector().scrollable(true)).scrollIntoView(new UiSelector().resourceId("com.samsung.android.app.dressroom:id/lock_screenshot").className("android.widget.ImageView"))
+    `
+        )
+        .click();
 
-    //         const enterName = await driver.$(
-    //           '//android.widget.EditText[@resource-id="com.samsung.android.app.dressroom:id/owner_info_edit_text_popup"]'
-    //         );
-    //         await enterName.waitForDisplayed({ timeout: 3000 });
-    //         // await enterName.setValue(`${nameFUser} ${nameLUser} 7048876441`);
-    //         await enterName.setValue(`testing 7048876441`);
-    //         await driver.pause(1500);
+      const infoSetAlready = await driver
+        .$(
+          `android=new UiSelector().className("android.widget.TextView").text("testing 7048876441")
+    `
+        )
+        .isExisting();
 
-    //         await driver
-    //           .$('//android.widget.Button[@resource-id="android:id/button1"]')
-    //           .click();
-    //         // continue the setting here. not all androids have this
-    //         await driver
-    //           .$(
-    //             '//android.widget.Button[@resource-id="com.samsung.android.app.dressroom:id/confirm_button"]'
-    //           )
-    //           .click();
-    //         await returnToMain();
-    //       } else {
-    //         console.log("User information was already set on lock screen.");
-    //         await driver
-    //           .$(
-    //             '//android.widget.Button[@resource-id="com.samsung.android.app.dressroom:id/confirm_button"]'
-    //           )
-    //           .click();
-    //         await returnToMain();
-    //       }
-    //     } catch {
-    //       console.log("An error occured while setting lock screen message");
-    //       await returnToMain();
-    //     }
+      console.log("Info already set?: ", infoSetAlready);
+      if (!infoSetAlready) {
+        await driver
+          .$(
+            `android=new UiSelector().className("android.widget.TextView").text("Contact information")
+    `
+          )
+          .click();
 
+        const enterName = await driver.$(
+          '//android.widget.EditText[@resource-id="com.samsung.android.app.dressroom:id/owner_info_edit_text_popup"]'
+        );
+        await enterName.waitForDisplayed({ timeout: 3000 });
+        // await enterName.setValue(`${nameFUser} ${nameLUser} 7048876441`);
+        await enterName.setValue(`testing 7048876441`);
+        await driver.pause(1500);
+
+        await driver
+          .$('//android.widget.Button[@resource-id="android:id/button1"]')
+          .click();
+        // continue the setting here. not all androids have this
+        await driver
+          .$(
+            '//android.widget.Button[@resource-id="com.samsung.android.app.dressroom:id/confirm_button"]'
+          )
+          .click();
+        await returnToMain();
+      } else {
+        console.log("User information was already set on lock screen.");
+        await driver
+          .$(
+            '//android.widget.Button[@resource-id="com.samsung.android.app.dressroom:id/confirm_button"]'
+          )
+          .click();
+        results.results.LockScreenMessageSet = true;
+        await returnToMain();
+      }
+    } catch {
+      results.results.LockScreenMessageSet = false;
+      console.log("An error occured while setting lock screen message");
+      await returnToMain();
+    }
+
+    const now = new Date();
+    const formattedDate = `${now.getFullYear()}-${String(
+      now.getMonth() + 1
+    ).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
+    // Example Output: "2024-11-14"
     console.log(`Results for ${device.udid}:\n`, results);
+    const jsonResult = JSON.stringify(results, null, 2);
+    fs.writeFileSync(
+      `./output-files/${device.udid}-${formattedDate}.txt`,
+      jsonResult
+    );
+
     await driver.deleteSession();
   }
 
   // launches appium servers
   async function launchAppiumServers(devices) {
-    // exec does not return a promise
-    devices.forEach((device) => {
-      const scriptThatRuns = `start cmd.exe /k "appium -p ${device.port}"`;
-      exec(scriptThatRuns, (error, stdout, stderr) => {
-        if (error) {
-          console.log("Error: " + error);
-          reject(error);
-          return;
-        }
+    const promises = devices.map((device) => {
+      return new Promise((resolve, reject) => {
+        const scriptThatRuns = `start cmd.exe /k "appium -p ${device.port}"`;
+        exec(scriptThatRuns, (error, stdout, stderr) => {
+          if (error) {
+            console.log("Error: " + error);
+            reject(error);
+            return;
+          }
 
-        if (stderr) {
-          console.log("std Error: " + stderr);
-          reject(stderr);
-          return;
-        }
-        // this throws error when closing the CMD window where appium is run for the device in question. Need to look into it
-        resolve(stdout); // Resolve the stdout as the result of the promise
+          if (stderr) {
+            console.log("std Error: " + stderr);
+            reject(stderr);
+            return;
+          }
+
+          resolve(stdout); // Resolve stdout as the result for this particular device
+        });
       });
     });
+
+    return Promise.all(promises); // Waits for all devices to either resolve or reject
   }
 
   // runs the scripts on devices
