@@ -97,221 +97,261 @@ async function main() {
       }
     }
 
-    try {
-      const clickConnections = await driver.$('//*[@text="Connections"]');
-      await clickConnections.click();
-      let checkWifi = false;
-      try {
-        checkWifi = await driver
-          .$(
-            `android=new UiScrollable(new UiSelector().scrollable(true)).scrollIntoView(new UiSelector().resourceId("android:id/summary").className("android.widget.TextView").text("HPCCR-Guest"))
-        `
-          )
-          .waitForDisplayed({
-            timeout: 2000,
-          });
-      } catch {
-        console.log("Device is not connected to HPCCR-Guest wifi.");
-      }
+    // try {
+    //   const clickConnections = await driver.$('//*[@text="Connections"]');
+    //   await clickConnections.click();
+    //   let checkWifi = false;
+    //   try {
+    //     checkWifi = await driver
+    //       .$(
+    //         `android=new UiScrollable(new UiSelector().scrollable(true)).scrollIntoView(new UiSelector().resourceId("android:id/summary").className("android.widget.TextView").text("HPCCR-Guest"))
+    //     `
+    //       )
+    //       .waitForDisplayed({
+    //         timeout: 2000,
+    //       });
+    //   } catch {
+    //     console.log("Device is not connected to HPCCR-Guest wifi.");
+    //   }
 
-      console.log(
-        "-------------------------check wifi--------------------------------\n",
-        await checkWifi,
-        "\n",
-        "-------------------------------------------------------------------\n"
-      );
+    //   console.log(
+    //     "-------------------------check wifi--------------------------------\n",
+    //     await checkWifi,
+    //     "\n",
+    //     "-------------------------------------------------------------------\n"
+    //   );
 
-      if (!checkWifi) {
-        await driver
-          .$(
-            `android=new UiScrollable(new UiSelector().scrollable(true)).scrollIntoView(new UiSelector().resourceId("android:id/title").className("android.widget.TextView").text("Wi-Fi"))
-        `
-          )
-          .click();
+    //   if (!checkWifi) {
+    //     await driver
+    //       .$(
+    //         `android=new UiScrollable(new UiSelector().scrollable(true)).scrollIntoView(new UiSelector().resourceId("android:id/title").className("android.widget.TextView").text("Wi-Fi"))
+    //     `
+    //       )
+    //       .click();
 
-        const selectHPCCRWifi = await driver.$('//*[@text="HPCCR-Guest"]');
-        await selectHPCCRWifi.click();
+    //     const selectHPCCRWifi = await driver.$('//*[@text="HPCCR-Guest"]');
+    //     await selectHPCCRWifi.click();
 
-        const wifiPassField = await driver.$(
-          '//*[@resource-id="com.android.settings:id/edittext"]'
-        );
-        wifiPassField.waitForDisplayed({ timeout: 10000 });
+    //     const wifiPassField = await driver.$(
+    //       '//*[@resource-id="com.android.settings:id/edittext"]'
+    //     );
+    //     wifiPassField.waitForDisplayed({ timeout: 10000 });
 
-        const wifiPassFieldTyped = await wifiPassField.setValue(
-          "caringforfamily"
-        );
-        console.log("wifi password enter result: ", wifiPassFieldTyped);
+    //     const wifiPassFieldTyped = await wifiPassField.setValue(
+    //       "caringforfamily"
+    //     );
+    //     console.log("wifi password enter result: ", wifiPassFieldTyped);
 
-        // Locate the "Connect" button (use the appropriate XPath/ID here)
-        const connectWifiBtn = await driver.$(
-          '//*[@resource-id="com.android.settings:id/shared_password_container"]'
-        );
-        const connectWifiBtnResult = await connectWifiBtn.click();
-        console.log("connect to wifi button result: ", connectWifiBtnResult);
-        results.results.wifiSet = true;
-        await returnToMain();
-      } else {
-        results.results.wifiSet = true;
-        await returnToMain();
-      }
-    } catch (err) {
-      console.log("Error setting wifi");
-      results.results.wifiSet = err;
-      await returnToMain();
-    }
+    //     // Locate the "Connect" button (use the appropriate XPath/ID here)
+    //     const connectWifiBtn = await driver.$(
+    //       '//*[@resource-id="com.android.settings:id/shared_password_container"]'
+    //     );
+    //     const connectWifiBtnResult = await connectWifiBtn.click();
+    //     console.log("connect to wifi button result: ", connectWifiBtnResult);
+    //     results.results.wifiSet = true;
+    //     await returnToMain();
+    //   } else {
+    //     results.results.wifiSet = true;
+    //     await returnToMain();
+    //   }
+    // } catch (err) {
+    //   console.log("Error setting wifi");
+    //   results.results.wifiSet = err;
+    //   await returnToMain();
+    // }
+
     // Rest of your test logic for Wi-Fi, motion smoothness, screen timeout, etc.
-    // motion smoothness setup
-    await driver
-      .$(
-        `android=new UiScrollable(new UiSelector().scrollable(true)).scrollIntoView(new UiSelector().resourceId("android:id/title").className("android.widget.TextView").text("Display"))
-    `
-      )
-      .click();
+    // // motion smoothness setup
+    // await driver
+    //   .$(
+    //     `android=new UiScrollable(new UiSelector().scrollable(true)).scrollIntoView(new UiSelector().resourceId("android:id/title").className("android.widget.TextView").text("Display"))
+    // `
+    //   )
+    //   .click();
 
-    try {
-      await driver
-        .$('android=new UiSelector().text("Motion smoothness")')
-        .click();
+    // try {
+    //   await driver
+    //     .$('android=new UiSelector().text("Motion smoothness")')
+    //     .click();
 
-      const standardSet = await driver
-        .$(
-          `android=new UiSelector().resourceId("android:id/checkbox").instance(1)`
-        )
-        .getAttribute("checked");
+    //   const standardSet = await driver
+    //     .$(
+    //       `android=new UiSelector().resourceId("android:id/checkbox").instance(1)`
+    //     )
+    //     .getAttribute("checked");
 
-      console.log("Testing here: ", standardSet);
+    //   console.log("Testing here: ", standardSet);
 
-      if (!standardSet) {
-        console.log("Motion is not set to standard");
-        // add script items to change the motion smoothness here
-        await driver
-          .$(
-            `android=new UiScrollable(new UiSelector().scrollable(true)).scrollIntoView(new UiSelector().resourceId("android:id/title").className("android.widget.TextView").text("Standard"))
-      `
-          )
-          .click();
+    //   if (standardSet == "false") {
+    //     console.log("Motion is not set to standard");
+    //     // add script items to change the motion smoothness here
+    //     await driver
+    //       .$(
+    //         `android=new UiScrollable(new UiSelector().scrollable(true)).scrollIntoView(new UiSelector().resourceId("android:id/title").className("android.widget.TextView").text("Standard"))
+    //   `
+    //       )
+    //       .click();
 
-        await driver
-          .$(
-            `android=new UiSelector().resourceId("com.android.settings:id/button").className("android.widget.Button").text("Apply")`
-          )
-          .click();
-        results.results.motionIsStandard = true;
-      } else {
-        // back out of it here
-        await driver.back();
-        results.results.motionIsStandard = true;
-        console.log("Motion is set to standard");
-      }
-    } catch (error) {
-      results.results.motionIsStandard = error;
-    }
+    //     await driver
+    //       .$(
+    //         `android=new UiSelector().resourceId("com.android.settings:id/button").className("android.widget.Button").text("Apply")`
+    //       )
+    //       .click();
+    //     results.results.motionIsStandard = true;
+    //   } else {
+    //     // back out of it here
+    //     await driver.back();
+    //     results.results.motionIsStandard = true;
+    //     console.log("Motion is set to standard");
+    //   }
+    // } catch (error) {
+    //   results.results.motionIsStandard = error;
+    // }
 
-    // screen timeout settings
-    try {
-      await driver
-        .$(
-          `android=new UiScrollable(new UiSelector().scrollable(true)).scrollIntoView(new UiSelector().resourceId("android:id/title").className("android.widget.TextView").text("Screen timeout"))
-    `
-        )
-        .click();
+    // // screen timeout settings
+    // try {
+    //   await driver
+    //     .$(
+    //       `android=new UiScrollable(new UiSelector().scrollable(true)).scrollIntoView(new UiSelector().resourceId("android:id/title").className("android.widget.TextView").text("Screen timeout"))
+    // `
+    //     )
+    //     .click();
 
-      await driver
-        .$(
-          `android=new UiScrollable(new UiSelector().scrollable(true)).scrollIntoView(new UiSelector().resourceId("com.android.settings:id/timeout_title").className("android.widget.CheckedTextView").text("2 minutes"))
-    `
-        )
-        .click();
-      results.results.screenTimeoutSet = true;
-      await driver.back();
-    } catch {
-      console.log("Screen timeout setting not found.");
-      results.results.screenTimeoutSet = false;
-    }
+    //   await driver
+    //     .$(
+    //       `android=new UiScrollable(new UiSelector().scrollable(true)).scrollIntoView(new UiSelector().resourceId("com.android.settings:id/timeout_title").className("android.widget.CheckedTextView").text("2 minutes"))
+    // `
+    //     )
+    //     .click();
+    //   results.results.screenTimeoutSet = true;
+    //   await driver.back();
+    // } catch {
+    //   console.log("Screen timeout setting not found.");
+    //   results.results.screenTimeoutSet = false;
+    // }
 
-    // edge panels disable
-    try {
-      await driver
-        .$(
-          `android=new UiScrollable(new UiSelector().scrollable(true)).scrollIntoView(new UiSelector().resourceId("android:id/switch_widget").className("android.widget.Switch"))
-        `
-        )
-        .click();
-      results.results.edgePanelsOff = true;
+    // // edge panels disable
+    // try {
+    //   await driver
+    //     .$(
+    //       `android=new UiScrollable(new UiSelector().scrollable(true)).scrollIntoView(new UiSelector().resourceId("android:id/switch_widget").className("android.widget.Switch"))
+    //     `
+    //     )
+    //     .click();
+    //   results.results.edgePanelsOff = true;
 
-      await returnToMain();
-    } catch {
-      console.log("Unable to toggle the edge panels switch");
-      results.results.edgePanelsOff = false;
+    //   await returnToMain();
+    // } catch {
+    //   console.log("Unable to toggle the edge panels switch");
+    //   results.results.edgePanelsOff = false;
 
-      await returnToMain();
-    }
+    //   await returnToMain();
+    // }
 
-    // wallpaper text
-    await driver
-      .$(
-        `android=new UiScrollable(new UiSelector().scrollable(true)).scrollIntoView(new UiSelector().resourceId("android:id/title").className("android.widget.TextView").text("Wallpaper and style"))
-    `
-      )
-      .click();
+    // // notification categories
 
-    try {
-      await driver
-        .$(
-          `android=new UiScrollable(new UiSelector().scrollable(true)).scrollIntoView(new UiSelector().resourceId("com.samsung.android.app.dressroom:id/lock_screenshot").className("android.widget.ImageView"))
-    `
-        )
-        .click();
+    // try {
+    //   await driver
+    //     .$(
+    //       `android=new UiScrollable(new UiSelector().scrollable(true)).scrollIntoView(new UiSelector().resourceId("android:id/title").className("android.widget.TextView").text("Notifications"))
+    //   `
+    //     )
+    //     .click();
 
-      const infoSetAlready = await driver
-        .$(
-          `android=new UiSelector().className("android.widget.TextView").text("testing 7048876441")
-    `
-        )
-        .isExisting();
+    //   await driver
+    //     .$(
+    //       `android=new UiScrollable(new UiSelector().scrollable(true)).scrollIntoView(new UiSelector().resourceId("android:id/title").className("android.widget.TextView").text("Advanced settings"))
+    //   `
+    //     )
+    //     .click();
 
-      console.log("Info already set?: ", infoSetAlready);
-      if (!infoSetAlready) {
-        await driver
-          .$(
-            `android=new UiSelector().className("android.widget.TextView").text("Contact information")
-    `
-          )
-          .click();
+    //   const categoriesEnabled = await driver
+    //     .$(
+    //       `android=new UiSelector().resourceId("android:id/widget_frame").instance(5)`
+    //     )
+    //     .getAttribute("checked");
+    //   console.log("Categories enabled: ", categoriesEnabled);
+    //   if (categoriesEnabled == "false") {
+    //     await driver
+    //       .$(
+    //         `android=new UiScrollable(new UiSelector().scrollable(true)).scrollIntoView(new UiSelector().resourceId("android:id/title").className("android.widget.TextView").text("Manage notification categories for each app"))
+    //   `
+    //       )
+    //       .click();
+    //   }
 
-        const enterName = await driver.$(
-          '//android.widget.EditText[@resource-id="com.samsung.android.app.dressroom:id/owner_info_edit_text_popup"]'
-        );
-        await enterName.waitForDisplayed({ timeout: 3000 });
-        // await enterName.setValue(`${nameFUser} ${nameLUser} 7048876441`);
-        await enterName.setValue(`testing 7048876441`);
-        await driver.pause(1500);
+    //   results.results.notificationCategories = true;
+    //   await returnToMain();
+    // } catch (error) {
+    //   console.log("Error with setting notifications.");
+    //   results.results.notificationCategories = false;
+    // }
 
-        await driver
-          .$('//android.widget.Button[@resource-id="android:id/button1"]')
-          .click();
-        // continue the setting here. not all androids have this
-        await driver
-          .$(
-            '//android.widget.Button[@resource-id="com.samsung.android.app.dressroom:id/confirm_button"]'
-          )
-          .click();
-        await returnToMain();
-      } else {
-        console.log("User information was already set on lock screen.");
-        await driver
-          .$(
-            '//android.widget.Button[@resource-id="com.samsung.android.app.dressroom:id/confirm_button"]'
-          )
-          .click();
-        results.results.LockScreenMessageSet = true;
-        await returnToMain();
-      }
-    } catch {
-      results.results.LockScreenMessageSet = false;
-      console.log("An error occured while setting lock screen message");
-      await returnToMain();
-    }
+    // // wallpaper text
+    // await driver
+    //   .$(
+    //     `android=new UiScrollable(new UiSelector().scrollable(true)).scrollIntoView(new UiSelector().resourceId("android:id/title").className("android.widget.TextView").text("Wallpaper and style"))
+    // `
+    //   )
+    //   .click();
+
+    // try {
+    //   await driver
+    //     .$(
+    //       `android=new UiScrollable(new UiSelector().scrollable(true)).scrollIntoView(new UiSelector().resourceId("com.samsung.android.app.dressroom:id/lock_screenshot").className("android.widget.ImageView"))
+    // `
+    //     )
+    //     .click();
+
+    //   const infoSetAlready = await driver
+    //     .$(
+    //       `android=new UiSelector().className("android.widget.TextView").text("testing 7048876441")
+    // `
+    //     )
+    //     .isExisting();
+
+    //   console.log("Info already set?: ", infoSetAlready);
+    //   if (!infoSetAlready) {
+    //     await driver
+    //       .$(
+    //         `android=new UiSelector().className("android.widget.TextView").text("Contact information")
+    // `
+    //       )
+    //       .click();
+
+    //     const enterName = await driver.$(
+    //       '//android.widget.EditText[@resource-id="com.samsung.android.app.dressroom:id/owner_info_edit_text_popup"]'
+    //     );
+    //     await enterName.waitForDisplayed({ timeout: 3000 });
+    //     // await enterName.setValue(`${nameFUser} ${nameLUser} 7048876441`);
+    //     await enterName.setValue(`testing 7048876441`);
+    //     await driver.pause(1500);
+
+    //     await driver
+    //       .$('//android.widget.Button[@resource-id="android:id/button1"]')
+    //       .click();
+    //     // continue the setting here. not all androids have this
+    //     await driver
+    //       .$(
+    //         '//android.widget.Button[@resource-id="com.samsung.android.app.dressroom:id/confirm_button"]'
+    //       )
+    //       .click();
+    //     await returnToMain();
+    //   } else {
+    //     console.log("User information was already set on lock screen.");
+    //     await driver
+    //       .$(
+    //         '//android.widget.Button[@resource-id="com.samsung.android.app.dressroom:id/confirm_button"]'
+    //       )
+    //       .click();
+    //     results.results.LockScreenMessageSet = true;
+    //     await returnToMain();
+    //   }
+    // } catch {
+    //   results.results.LockScreenMessageSet = false;
+    //   console.log("An error occured while setting lock screen message");
+    //   await returnToMain();
+    // }
 
     const now = new Date();
     const formattedDate = `${now.getFullYear()}-${String(
