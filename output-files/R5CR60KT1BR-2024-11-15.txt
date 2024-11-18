@@ -1,6 +1,0 @@
-{
-  "device": "R5CR60KT1BR",
-  "results": {
-    "notificationCategories": true
-  }
-}

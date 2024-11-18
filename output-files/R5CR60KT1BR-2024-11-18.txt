@@ -5,6 +5,7 @@
     "motionIsStandard": true,
     "screenTimeoutSet": true,
     "edgePanelsOff": true,
+    "notificationCategories": true,
     "LockScreenMessageSet": true
   }
 }
