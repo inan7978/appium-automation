@@ -3,6 +3,9 @@ const returnToMain = require("./returnToMain");
 const fs = require("fs");
 const { remote } = require("webdriverio");
 const connectWiFi = require("./tasks/connectWifi");
+const motionSmoothnessStandard = require("./tasks/motionSmoothnessStandard");
+const screenTimeout = require("./tasks/screenTimeout");
+const edgePanelsOff = require("./tasks/edgePanelsOff");
 
 async function script(device) {
   const capabilities = {
@@ -35,94 +38,16 @@ async function script(device) {
   );
   await returnToMain(driver);
 
-  // Rest of your test logic for Wi-Fi, motion smoothness, screen timeout, etc.
   // motion smoothness setup
-  await driver
-    .$(
-      `android=new UiScrollable(new UiSelector().scrollable(true)).scrollIntoView(new UiSelector().resourceId("android:id/title").className("android.widget.TextView").text("Display"))
-    `
-    )
-    .click();
-
-  try {
-    await driver
-      .$('android=new UiSelector().text("Motion smoothness")')
-      .click();
-
-    const standardSet = await driver
-      .$(
-        `android=new UiSelector().resourceId("android:id/checkbox").instance(1)`
-      )
-      .getAttribute("checked");
-
-    console.log("Testing here: ", standardSet);
-
-    if (standardSet == "false") {
-      console.log("Motion is not set to standard");
-      // add script items to change the motion smoothness here
-      await driver
-        .$(
-          `android=new UiScrollable(new UiSelector().scrollable(true)).scrollIntoView(new UiSelector().resourceId("android:id/title").className("android.widget.TextView").text("Standard"))
-      `
-        )
-        .click();
-
-      await driver
-        .$(
-          `android=new UiSelector().resourceId("com.android.settings:id/button").className("android.widget.Button").text("Apply")`
-        )
-        .click();
-      results.results.motionIsStandard = true;
-    } else {
-      // back out of it here
-      await driver.back();
-      results.results.motionIsStandard = true;
-      console.log("Motion is set to standard");
-    }
-  } catch (error) {
-    results.results.motionIsStandard = error;
-  }
+  results.results.standardSmoothness = await motionSmoothnessStandard(driver);
+  await returnToMain(driver);
 
   // screen timeout settings
-  try {
-    await driver
-      .$(
-        `android=new UiScrollable(new UiSelector().scrollable(true)).scrollIntoView(new UiSelector().resourceId("android:id/title").className("android.widget.TextView").text("Screen timeout"))
-    `
-      )
-      .click();
-
-    await driver
-      .$(
-        `android=new UiScrollable(new UiSelector().scrollable(true)).scrollIntoView(new UiSelector().resourceId("com.android.settings:id/timeout_title").className("android.widget.CheckedTextView").text("2 minutes"))
-    `
-      )
-      .click();
-    results.results.screenTimeoutSet = true;
-    await driver.back();
-  } catch {
-    console.log("Screen timeout setting not found.");
-    results.results.screenTimeoutSet = false;
-  }
-
+  results.results.screenTimeout = await screenTimeout(driver, "2 minutes");
+  await returnToMain(driver);
   // edge panels disable
-  try {
-    await driver
-      .$(
-        `android=new UiScrollable(new UiSelector().scrollable(true)).scrollIntoView(new UiSelector().resourceId("android:id/switch_widget").className("android.widget.Switch"))
-        `
-      )
-      .click();
-    results.results.edgePanelsOff = true;
-
-    await returnToMain(driver);
-  } catch {
-    console.log("Unable to toggle the edge panels switch");
-    results.results.edgePanelsOff = false;
-
-    await returnToMain(driver);
-  }
-
+  results.results.edgePanelsOff = await edgePanelsOff(driver);
+  await returnToMain(driver);
   // notification categories
 
   try {

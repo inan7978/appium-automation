@@ -45,9 +45,9 @@ async function connectWiFi(driver, ssid, passkey) {
     } else {
       return true;
     }
-  } catch (err) {
-    console.log("Error setting wifi: ", err);
-    return false;
+  } catch (error) {
+    console.log("Error setting wifi: ", error);
+    return error;
   }
 }
 

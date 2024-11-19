@@ -2,8 +2,8 @@
   "device": "R5CR60KT1BR",
   "results": {
     "wifiSet": true,
-    "motionIsStandard": true,
-    "screenTimeoutSet": true,
+    "standardSmoothness": true,
+    "screenTimeout": true,
     "edgePanelsOff": true,
     "notificationCategories": true,
     "LockScreenMessageSet": true
