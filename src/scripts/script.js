@@ -45,9 +45,11 @@ async function script(device) {
   // screen timeout settings
   results.results.screenTimeout = await screenTimeout(driver, "2 minutes");
   await returnToMain(driver);
+
   // edge panels disable
   results.results.edgePanelsOff = await edgePanelsOff(driver);
   await returnToMain(driver);
+
   // notification categories
 
   try {
