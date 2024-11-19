@@ -2,6 +2,7 @@
 const returnToMain = require("./returnToMain");
 const fs = require("fs");
 const { remote } = require("webdriverio");
+const connectWiFi = require("./tasks/connectWifi");
 
 async function script(device) {
   const capabilities = {
@@ -27,68 +28,12 @@ async function script(device) {
 
   // Your existing function logic goes here
 
-  try {
-    const clickConnections = await driver.$('//*[@text="Connections"]');
-    await clickConnections.click();
-    let checkWifi = false;
-    try {
-      checkWifi = await driver
-        .$(
-          `android=new UiScrollable(new UiSelector().scrollable(true)).scrollIntoView(new UiSelector().resourceId("android:id/summary").className("android.widget.TextView").text("HPCCR-Guest"))
-        `
-        )
-        .waitForDisplayed({
-          timeout: 2000,
-        });
-    } catch {
-      console.log("Device is not connected to HPCCR-Guest wifi.");
-    }
-
-    console.log(
-      "-------------------------check wifi--------------------------------\n",
-      await checkWifi,
-      "\n",
-      "-------------------------------------------------------------------\n"
-    );
-
-    if (!checkWifi) {
-      await driver
-        .$(
-          `android=new UiScrollable(new UiSelector().scrollable(true)).scrollIntoView(new UiSelector().resourceId("android:id/title").className("android.widget.TextView").text("Wi-Fi"))
-        `
-        )
-        .click();
-
-      const selectHPCCRWifi = await driver.$('//*[@text="HPCCR-Guest"]');
-      await selectHPCCRWifi.click();
-
-      const wifiPassField = await driver.$(
-        '//*[@resource-id="com.android.settings:id/edittext"]'
-      );
-      wifiPassField.waitForDisplayed({ timeout: 10000 });
-
-      const wifiPassFieldTyped = await wifiPassField.setValue(
-        "caringforfamily"
-      );
-      console.log("wifi password enter result: ", wifiPassFieldTyped);
-
-      // Locate the "Connect" button (use the appropriate XPath/ID here)
-      const connectWifiBtn = await driver.$(
-        '//*[@resource-id="com.android.settings:id/shared_password_container"]'
-      );
-      const connectWifiBtnResult = await connectWifiBtn.click();
-      console.log("connect to wifi button result: ", connectWifiBtnResult);
-      results.results.wifiSet = true;
-      await returnToMain(driver);
-    } else {
-      results.results.wifiSet = true;
-      await returnToMain(driver);
-    }
-  } catch (err) {
-    console.log("Error setting wifi");
-    results.results.wifiSet = err;
-    await returnToMain(driver);
-  }
+  results.results.wifiSet = await connectWiFi(
+    driver,
+    "HPCCR-Guest",
+    "caringforfamily"
+  );
+  await returnToMain(driver);
 
   // Rest of your test logic for Wi-Fi, motion smoothness, screen timeout, etc.
   // motion smoothness setup
