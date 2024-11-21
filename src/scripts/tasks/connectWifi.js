@@ -1,49 +1,58 @@
 async function connectWiFi(driver, ssid, passkey) {
   try {
-    const clickConnections = await driver.$('//*[@text="Connections"]');
-    await clickConnections.click();
-    let checkWifi = false;
-    try {
-      checkWifi = await driver
-        .$(
-          `android=new UiScrollable(new UiSelector().scrollable(true)).scrollIntoView(new UiSelector().resourceId("android:id/summary").className("android.widget.TextView").text("${ssid}"))
-        `
-        )
-        .waitForDisplayed({
-          timeout: 2000,
-        });
-    } catch {
-      console.log(`Device is not connected to ${ssid} wifi.`);
-    }
+    await driver.$('//*[@text="Connections"]').click();
 
-    if (!checkWifi) {
-      await driver
-        .$(
-          `android=new UiScrollable(new UiSelector().scrollable(true)).scrollIntoView(new UiSelector().resourceId("android:id/title").className("android.widget.TextView").text("Wi-Fi"))
+    await driver
+      .$(
+        `android=new UiScrollable(new UiSelector().scrollable(true)).scrollIntoView(new UiSelector().resourceId("android:id/title").className("android.widget.TextView").text("Wi-Fi"))
         `
-        )
-        .click();
+      )
+      .click();
 
-      const selectHPCCRWifi = await driver.$(`//*[@text="${ssid}"]`);
-      await selectHPCCRWifi.click();
+    // this works by checking to see if "HPCCR-Guest" element can be found from the parent of the "Connected" Summary element
+    // essentially works as a sibling checker, that verifies both value exist at the same time.
+    // Can see issue occur if there are multiple elements with identical attributes or signatures in the same context.
+    // This happens because UiSelector, by default, will match the first occurrence that satisfies the selector, unless explicitly constrained.
+    const checkConnected = await driver
+      .$(
+        `android=new UiSelector().resourceId("com.android.settings:id/title").text("HPCCR-Guest").fromParent(
+            new UiSelector().resourceId("com.android.settings:id/summary").text("Connected")
+        )`
+      )
+      .isExisting();
+
+    if (!checkConnected) {
+      await driver.$(`//*[@text="${ssid}"]`).click();
 
       const wifiPassField = await driver.$(
         '//*[@resource-id="com.android.settings:id/edittext"]'
       );
       wifiPassField.waitForDisplayed({ timeout: 10000 });
 
-      const wifiPassFieldTyped = await wifiPassField.setValue(`${passkey}`);
-      console.log("wifi password enter result: ", wifiPassFieldTyped);
+      await wifiPassField.setValue(`${passkey}`);
 
-      // Locate the "Connect" button (use the appropriate XPath/ID here)
-      const connectWifiBtn = await driver.$(
-        '//*[@resource-id="com.android.settings:id/shared_password_container"]'
-      );
-      const connectWifiBtnResult = await connectWifiBtn.click();
-      console.log("connect to wifi button result: ", connectWifiBtnResult);
-      return true;
+      await driver
+        .$(
+          '//*[@resource-id="com.android.settings:id/shared_password_container"]'
+        )
+        .click();
     } else {
       return true;
+    }
+
+    await driver.pause(2000);
+    const verify = await driver
+      .$(
+        `android=new UiSelector().resourceId("com.android.settings:id/title").text("HPCCR-Guest").fromParent(
+            new UiSelector().resourceId("com.android.settings:id/summary").text("Connected")
+        )`
+      )
+      .isExisting();
+
+    if (verify) {
+      return true;
+    } else {
+      return false;
     }
   } catch (error) {
     console.log("Error setting wifi: ", error);

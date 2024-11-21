@@ -9,6 +9,7 @@ const edgePanelsOff = require("./tasks/edgePanelsOff");
 const notificationCategories = require("./tasks/notificationCategories");
 const wallpaperText = require("./tasks/wallpaperText");
 const moveContactsApp = require("./tasks/moveContactsApp");
+const testingTask = require("./tasks/testingTask");
 
 async function script(device) {
   const capabilities = {
@@ -26,6 +27,7 @@ async function script(device) {
     port: device.port,
     logLevel: "info",
     capabilities,
+    waitForTimeout: 5000,
   };
 
   // below gets current date and from there makes the file name when scripts complete
@@ -38,14 +40,16 @@ async function script(device) {
 
   const driver = await remote(wdOpts);
 
+  // console.log(await testingTask(driver));
+
   // Your existing function logic goes here
 
-  // results.results.wifiSet = await connectWiFi(
-  //   driver,
-  //   "HPCCR-Guest",
-  //   "caringforfamily"
-  // );
-  // await returnToMain(driver);
+  results.results.wifiSet = await connectWiFi(
+    driver,
+    "HPCCR-Guest",
+    "caringforfamily"
+  );
+  await returnToMain(driver);
 
   // // motion smoothness setup
   // results.results.standardSmoothness = await motionSmoothnessStandard(driver);
