@@ -10,6 +10,7 @@ const notificationCategories = require("./tasks/notificationCategories");
 const wallpaperText = require("./tasks/wallpaperText");
 const moveContactsApp = require("./tasks/moveContactsApp");
 const testingTask = require("./tasks/testingTask");
+const goToApp = require("./goToApp");
 
 async function script(device) {
   const capabilities = {
@@ -44,12 +45,14 @@ async function script(device) {
 
   // Your existing function logic goes here
 
-  results.results.wifiSet = await connectWiFi(
-    driver,
-    "HPCCR-Guest",
-    "caringforfamily"
-  );
-  await returnToMain(driver);
+  console.log(goToApp(driver, "Notes"));
+
+  // results.results.wifiSet = await connectWiFi(
+  //   driver,
+  //   "HPCCR-Guest",
+  //   "caringforfamily"
+  // );
+  // await returnToMain(driver);
 
   // // motion smoothness setup
   // results.results.standardSmoothness = await motionSmoothnessStandard(driver);
