@@ -11,6 +11,7 @@ const wallpaperText = require("./tasks/wallpaperText");
 const moveContactsApp = require("./tasks/moveContactsApp");
 const testingTask = require("./tasks/testingTask");
 const goToApp = require("./goToApp");
+const interceptX = require("./tasks/interceptX");
 
 async function script(device) {
   const capabilities = {
@@ -41,11 +42,36 @@ async function script(device) {
 
   const driver = await remote(wdOpts);
 
+  await interceptX(driver, returnToMain);
+
   // console.log(await testingTask(driver));
 
   // Your existing function logic goes here
 
-  console.log(goToApp(driver, "Notes"));
+  // await goToApp(driver, "Control");
+  // if (
+  //   await driver
+  //     .$(
+  //       `android=new UiSelector().resourceId("com.sophos.mobilecontrol.client.android:id/requirement_header").text("Battery optimization")`
+  //     )
+  //     .isExisting()
+  // ) {
+  //   await driver
+  //     .$(
+  //       `android=new UiSelector().resourceId("com.sophos.mobilecontrol.client.android:id/wizard_start").className(android.widget.Button).text("STAY PROTECTED")`
+  //     )
+  //     .click();
+  // } else {
+  //   console.log("Battery optimization likely already set.");
+  // }
+
+  // try {
+  //   await driver
+  //     .$(`android=new UiSelector().text("Use without an account")`)
+  //     .click();
+  // } catch {
+  //   console.log("Houston... problem");
+  // }
 
   // results.results.wifiSet = await connectWiFi(
   //   driver,

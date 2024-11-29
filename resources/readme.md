@@ -5,3 +5,5 @@
 ## https://appium.io/docs/en/latest/
 
 ## https://webdriver.io/docs/api/appium
+
+## https://developer.android.com/reference/android/view/KeyEvent#KEYCODE_HOME
