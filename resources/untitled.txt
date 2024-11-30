@@ -82,12 +82,15 @@ appium -p 2346
 
 battery optimizations
 
-accessibility > Installed Apps > Sophos accessibility Service
-settings > app > intercept X > appear on top
 settings > apps > Authenticator > allow notifications
+ done - accessibility > Installed Apps > Sophos accessibility Service
+done - settings > app > intercept X > appear on top
 settings > apps > (3 dots in top right) > special access > All files Access > Toggle intercept X
 settings > apps > (3 dots in top right) > special access > usage data access > intercept X
-settings > apps > intercept X > Notifications > Notification categories
+done - settings > apps > intercept X > Notifications > Notification categories
 settings > apps > mobile control > notifications > notification categories
 set pin at end
+
+00000000-0000-006c-ffff-ffff0000146a
+
 
