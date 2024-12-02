@@ -91,6 +91,10 @@ done - settings > apps > intercept X > Notifications > Notification categories
 settings > apps > mobile control > notifications > notification categories
 set pin at end
 
-00000000-0000-006c-ffff-ffff0000146a
+const filesAccess = await driver // need to find way to locate this easy to toggle, difficult to check
+      .$(
+        `android=new UiScrollable(new UiSelector().scrollable(true)).scrollIntoView(new UiSelector().text("Intercept X").fromParent(new UiSelector().childSelector(new UiSelector().resourceId("android:id/widget_frame").childSelector(new UiSelector().resourceId("android:id/switch_widget")))))`
+      )
+      .getAttribute("checked");
 
 
