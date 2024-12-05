@@ -1,12 +1,12 @@
 What Bill does:
-1.	Run through Sophos and intercept X setups
+1.	Done - Run through Sophos and intercept X setups
 2.	Done - Notifications > advanced settings > manage notification category for each application
 3.	Done - Display > standard mation smoothness
 4.	Done - Display > Screen timeout to 2 minutes
 5.	Done - Lock Screen and AOD > Lock screen message (name and 704 887 6441)
-6.	Apps > Authenticator > Allow notifications
+6.	Done -  Apps > Authenticator > Allow notifications
 7.	Done - Apps > Intercept X > Notifications > Set to silent, turn off for lock screen and badge, and then in notification categories turn off all except for threat apps
-8.	Apps > Sophos Mobile Control > Notifications > Silent, turn off for lock screen and badge, and then in notification categories turn off all
+8.	Done - Apps > Sophos Mobile Control > Notifications > Silent, turn off for lock screen and badge, and then in notification categories turn off all
 9.	Leave wifi as it is
 10.	In the quick actions on small menu take out airplane mode and add other app
 11.	In the quick actions on big menu remove airplane mode and mobile data

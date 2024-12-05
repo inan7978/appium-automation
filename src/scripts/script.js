@@ -12,6 +12,7 @@ const moveContactsApp = require("./tasks/moveContactsApp");
 const testingTask = require("./tasks/testingTask");
 const goToApp = require("./goToApp");
 const interceptX = require("./tasks/interceptX");
+const openCC = require("./openCC");
 
 async function script(device) {
   const capabilities = {
@@ -42,7 +43,7 @@ async function script(device) {
 
   const driver = await remote(wdOpts);
 
-  await interceptX(driver, returnToMain);
+  // await interceptX(driver, returnToMain);
 
   // console.log(await testingTask(driver));
 

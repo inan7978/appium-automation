@@ -157,6 +157,7 @@ async function interceptX(driver, returnToMain) {
     await driver.back();
     await driver.back();
 
+    // special access setup
     await driver
       .$(
         `android=new UiSelector().className("android.widget.ImageView").description("More options")`
@@ -175,24 +176,15 @@ async function interceptX(driver, returnToMain) {
       )
       .click();
 
-    const filesAccess = await driver // need to find way to locate this. easy to toggle, difficult to check
+    await driver
       .$(
-        'android=new UiScrollable(new UiSelector().scrollable(true)).scrollIntoView(new UiSelector().text("Intercept X").fromParent(new UiSelector().resourceId("android:id/widget_frame").childSelector(new UiSelector().resourceId("android:id/switch_widget"))))'
+        `android=new UiScrollable(new UiSelector().scrollable(true)).scrollIntoView(new UiSelector().resourceId("android:id/title").className("android.widget.TextView").text("Intercept X"))
+        `
       )
-      .getAttribute("checked");
-
-    console.log("files Access: ", filesAccess);
-
-    if (filesAccess == "false") {
-      await driver
-        .$(
-          `android=new UiScrollable(new UiSelector().scrollable(true)).scrollIntoView(new UiSelector().resourceId("android:id/title").className("android.widget.TextView").text("Intercept X"))
-          `
-        )
-        .click();
-    }
+      .click();
     await driver.back();
 
+    // usage data access
     await driver
       .$(
         `android=new UiScrollable(new UiSelector().scrollable(true)).scrollIntoView(new UiSelector().resourceId("android:id/title").className("android.widget.TextView").text("Usage data access"))
@@ -200,19 +192,42 @@ async function interceptX(driver, returnToMain) {
       )
       .click();
 
-    const usageDataAccess = await driver // same thing as last one
+    await driver
       .$(
-        `android=new UiScrollable(new UiSelector().scrollable(true)).scrollIntoView(new UiSelector().text("Intercept X").fromParent(new UiSelector().childSelector(new UiSelector().resourceId("android:id/widget_frame").childSelector(new UiSelector().resourceId("android:id/switch_widget")))))`
+        `android=new UiScrollable(new UiSelector().scrollable(true)).scrollIntoView(new UiSelector().resourceId("android:id/title").className("android.widget.TextView").text("Intercept X"))
+        `
+      )
+      .click();
+
+    await driver.back();
+    await driver.back();
+
+    // allow authenticator notifications
+
+    await driver
+      .$(
+        `android=new UiScrollable(new UiSelector().scrollable(true)).scrollIntoView(new UiSelector().resourceId("android:id/title").className("android.widget.TextView").text("Authenticator"))
+      `
+      )
+      .click();
+    await driver
+      .$(
+        `android=new UiScrollable(new UiSelector().scrollable(true)).scrollIntoView(new UiSelector().resourceId("android:id/title").className("android.widget.TextView").text("Notifications"))
+      `
+      )
+      .click();
+
+    // check to see if switch is already toggled to on
+    const notificationsAuthenticator = await driver
+      .$(
+        `android=new UiSelector().resourceId("com.android.settings:id/switch_widget")`
       )
       .getAttribute("checked");
 
-    console.log("usage data access: ", usageDataAccess);
-
-    if (usageDataAccess == "false") {
+    if (notificationsAuthenticator == "false") {
       await driver
         .$(
-          `android=new UiScrollable(new UiSelector().scrollable(true)).scrollIntoView(new UiSelector().resourceId("android:id/title").className("android.widget.TextView").text("Intercept X"))
-          `
+          `android=new UiSelector().resourceId("com.android.settings:id/switch_widget")`
         )
         .click();
     }
