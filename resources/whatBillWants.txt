@@ -7,9 +7,9 @@ What Bill does:
 6.	Done -  Apps > Authenticator > Allow notifications
 7.	Done - Apps > Intercept X > Notifications > Set to silent, turn off for lock screen and badge, and then in notification categories turn off all except for threat apps
 8.	Done - Apps > Sophos Mobile Control > Notifications > Silent, turn off for lock screen and badge, and then in notification categories turn off all
-9.	Leave wifi as it is
-10.	In the quick actions on small menu take out airplane mode and add other app
-11.	In the quick actions on big menu remove airplane mode and mobile data
+9.	Done - Leave wifi as it is
+10.	Done - In the quick actions on small menu take out airplane mode and add other app
+11.	Done - In the quick actions on big menu remove airplane mode and mobile data
 12.	Move the icons around
 13.	Check for the os updates
 14.	Then open up chrome and click no thanks for notifications
@@ -17,4 +17,10 @@ What Bill does:
 16.	Set up outlook
 17.	Add a contact to outlook in contacts app and add the helpdesk
 18.	Add the home office number as contact as well
+
+
+
+
+//android.widget.FrameLayout[@content-desc="Airplane
+mode, Remove, Button"]/android.widget.ImageView
 

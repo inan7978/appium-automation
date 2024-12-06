@@ -12,8 +12,7 @@ const moveContactsApp = require("./tasks/moveContactsApp");
 const testingTask = require("./tasks/testingTask");
 const goToApp = require("./goToApp");
 const interceptX = require("./tasks/interceptX");
-const openCC = require("./openCC");
-
+const adjustQC = require("./tasks/adjustQC");
 async function script(device) {
   const capabilities = {
     platformName: "Android",
@@ -43,9 +42,7 @@ async function script(device) {
 
   const driver = await remote(wdOpts);
 
-  // await interceptX(driver, returnToMain);
-
-  // console.log(await testingTask(driver));
+  results.results.quickActions = await adjustQC(driver);
 
   // Your existing function logic goes here
 

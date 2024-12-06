@@ -36,6 +36,8 @@ async function openCC(
         ],
       },
     ]);
+
+    // await driver.releaseActions() may need this in the future...
     return true;
   } catch (error) {
     console.error("Error while performing swipe up:", error);

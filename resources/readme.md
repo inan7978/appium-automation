@@ -7,3 +7,5 @@
 ## https://webdriver.io/docs/api/appium
 
 ## https://developer.android.com/reference/android/view/KeyEvent#KEYCODE_HOME
+
+InterceptX file also contains the operation to allow Authenticator Notifications
