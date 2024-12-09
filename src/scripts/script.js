@@ -13,6 +13,7 @@ const testingTask = require("./tasks/testingTask");
 const goToApp = require("./goToApp");
 const interceptX = require("./tasks/interceptX");
 const adjustQC = require("./tasks/adjustQC");
+const googleSetup = require("./tasks/googleSetup");
 async function script(device) {
   const capabilities = {
     platformName: "Android",
@@ -42,7 +43,9 @@ async function script(device) {
 
   const driver = await remote(wdOpts);
 
-  results.results.quickActions = await adjustQC(driver);
+  await googleSetup(driver);
+
+  // results.results.quickActions = await adjustQC(driver);
 
   // Your existing function logic goes here
 

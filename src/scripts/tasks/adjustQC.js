@@ -104,7 +104,10 @@ data, Remove, Button"]/android.widget.ImageView`
       )
       .click();
 
-    await returnToMain(driver);
+    await driver.back();
+    await driver.back();
+    await driver.back();
+
     return true;
   } catch (error) {
     return error;
